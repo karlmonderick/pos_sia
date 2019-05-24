@@ -113,12 +113,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <p>Inventory</p>
                     </router-link>
                 </li>
-                {{-- <li class="nav-item">
+                @can('isAdmin')
+                <li class="nav-item">
                     <router-link to="/developer" class="nav-link">
                         <i class="fas fa-cogs nav-icon indigo"></i>
                         <p>Developer</p>
                     </router-link>
-                </li> --}}
+                </li>
+                @endcan
             </ul>
           </li>
 

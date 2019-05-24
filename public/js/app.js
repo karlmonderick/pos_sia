@@ -2222,7 +2222,8 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     getProfilePic: function getProfilePic() {
-      return "img/profiles/" + this.form.photo;
+      //return "img/profiles/"+ this.form.photo;
+      return this.form.photo.indexOf('base64') != -1 ? this.form.photo : 'img/profiles/' + this.form.photo;
     },
     updateInfo: function updateInfo() {
       var _this = this;

@@ -261,7 +261,8 @@
 
         methods:{
             getProfilePic(){
-                return "img/profiles/"+ this.form.photo;
+                //return "img/profiles/"+ this.form.photo;
+                return this.form.photo.indexOf('base64') != -1 ? this.form.photo : 'img/profiles/' + this.form.photo;
             },
             updateInfo(){
                 this.$Progress.start();
