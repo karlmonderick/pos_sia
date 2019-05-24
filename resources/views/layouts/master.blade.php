@@ -58,10 +58,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-          <img src="./img/user.png" class="img-circle elevation-2" alt="User Image">
+          <img src="./img/profiles/{{ Auth::user()->photo }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-          <a href="#" class="d-block"><strong>{{ Auth::user()->name }}</strong></a>
+            <router-link to="/profile" class="d-block"><strong>{{ Auth::user()->name }}</strong></router-link>
           <a href="#" class="d-block"><small>Admin</small></a>
         </div>
       </div>
@@ -113,6 +113,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         <p>Inventory</p>
                     </router-link>
                 </li>
+                {{-- <li class="nav-item">
+                    <router-link to="/developer" class="nav-link">
+                        <i class="fas fa-cogs nav-icon indigo"></i>
+                        <p>Developer</p>
+                    </router-link>
+                </li> --}}
             </ul>
           </li>
 
