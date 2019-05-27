@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
-use App\Product;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Product;
 
 class ProductController extends Controller
 {
@@ -12,9 +13,14 @@ class ProductController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
+
+
+
     public function index()
     {
-        //
+        // if(\Gate::allows('isAdmin')){
+            return Product::latest()->paginate(5);
+        // }
     }
 
     /**
@@ -78,8 +84,11 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Product $product)
+    public function destroy($id)
     {
-        //
+        // $this->authorize('isAdmin');
+        $product = Product::findOrFail($id);
+        $product->delete();
+        return ['message' => 'product deleted'];
     }
 }

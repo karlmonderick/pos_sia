@@ -107,11 +107,25 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </router-link>
                     </li>
                 @endcan
-                <li class="nav-item">
-                    <router-link to="/inventory" class="nav-link">
-                        <i class="fas fa-suitcase nav-icon orange"></i>
-                        <p>Inventory</p>
-                    </router-link>
+                <li class="nav-item has-treeview">
+                    <a href="#" class="nav-link ">
+                            <i class="fas fa-archive nav-icon"></i>
+                        <p>Inventory<i class="right fa fa-angle-left"></i></p>
+                    </a>
+                    <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                                <router-link to="/inventory" class="nav-link">
+                                    <i class="fas fa-suitcase nav-icon"></i>
+                                    <p>Inventory Stocks</p>
+                                </router-link>
+                            </li>
+                            <li class="nav-item">
+                                    <router-link to="/product" class="nav-link">
+                                        <i class="fas fa-box-open nav-icon"></i>
+                                        <p>Product List</p>
+                                    </router-link>
+                                </li>
+                    </ul>
                 </li>
                 @can('isDeveloper')
                     <li class="nav-item">
