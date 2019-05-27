@@ -8,11 +8,15 @@ require('./bootstrap');
 
 window.Vue = require('vue');
 
+//Front end accessability using Gate
+import Gate from "./Gate";
+Vue.prototype.$gate = new Gate(window.user);
+
 //Moment
 import moment from 'moment';
 
 //SweetAlert
-import swal from 'sweetalert2'
+import swal from 'sweetalert2';
 window.swal = swal;
 
 const toast = swal.mixin({
@@ -22,6 +26,9 @@ const toast = swal.mixin({
     timer: 3000
   });
 window.toast = toast;
+
+//Simple Pagination
+Vue.component('pagination', require('laravel-vue-pagination'));
 
 
 //Form Handling from VForm
@@ -51,7 +58,9 @@ let routes = [
     { path: '/reports', component: require('./components/Reports.vue').default },
     { path: '/developer', component: require('./components/Developer.vue').default },
     { path: '/users', component: require('./components/Users.vue').default },
-    { path: '/profile', component: require('./components/Profile.vue').default }
+    { path: '/profile', component: require('./components/Profile.vue').default },
+    { path: '*', component: require('./components/NotFound.vue').default }
+
   ]
 const router = new VueRouter({
     mode: 'history',
@@ -84,10 +93,23 @@ Vue.component(
     require('./components/passport/PersonalAccessTokens.vue').default
 );
 
+Vue.component(
+    'not-found',
+    require('./components/NotFound.vue').default
+);
+
 //Vue.component('example-component', require('./components/ExampleComponent.vue').default);
 
 //App
 const app = new Vue({
     el: '#app',
-    router
+    router,
+    data:{
+        search: ''
+    },
+    methods:{
+        searchit: _.debounce(() =>{
+            Fire.$emit('searching');
+        }, 1000)
+    }
 });

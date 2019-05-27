@@ -30,16 +30,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </ul>
 
     <!-- SEARCH FORM -->
-    <form class="form-inline ml-3">
       <div class="input-group input-group-sm">
-        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+        <input class="form-control form-control-navbar" @keyup="searchit" v-model="search" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
-          <button class="btn btn-navbar" type="submit">
+          <button class="btn btn-navbar" @click="searchit" type="submit">
             <i class="fa fa-search"></i>
           </button>
         </div>
       </div>
-    </form>
 
   </nav>
   <!-- /.navbar -->
@@ -61,8 +59,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <img src="./img/profiles/{{ Auth::user()->photo }}" class="img-circle elevation-2" alt="User Image">
         </div>
         <div class="info">
-            <router-link to="/profile" class="d-block"><strong>{{ Auth::user()->name }}</strong></router-link>
-          <a href="#" class="d-block"><small>Admin</small></a>
+            <router-link to="/profile" class="d-block"><strong>{{ Auth::user()->name }}</strong>
+            <br><small>{{ Auth::user()->type }}</small></router-link>
         </div>
       </div>
 
@@ -101,25 +99,27 @@ scratch. This page gets rid of all links and provides the needed markup only.
               </p>
             </a>
             <ul class="nav nav-treeview">
-                <li class="nav-item">
-                    <router-link to="/users" class="nav-link">
-                        <i class="fas fa-users nav-icon yellow"></i>
-                        <p>Users</p>
-                    </router-link>
-                </li>
+                @can('isAdmin')
+                    <li class="nav-item">
+                        <router-link to="/users" class="nav-link">
+                            <i class="fas fa-users nav-icon yellow"></i>
+                            <p>Users</p>
+                        </router-link>
+                    </li>
+                @endcan
                 <li class="nav-item">
                     <router-link to="/inventory" class="nav-link">
                         <i class="fas fa-suitcase nav-icon orange"></i>
                         <p>Inventory</p>
                     </router-link>
                 </li>
-                @can('isAdmin')
-                <li class="nav-item">
-                    <router-link to="/developer" class="nav-link">
-                        <i class="fas fa-cogs nav-icon indigo"></i>
-                        <p>Developer</p>
-                    </router-link>
-                </li>
+                @can('isDeveloper')
+                    <li class="nav-item">
+                        <router-link to="/developer" class="nav-link">
+                            <i class="fas fa-cogs nav-icon indigo"></i>
+                            <p>Developer</p>
+                        </router-link>
+                    </li>
                 @endcan
             </ul>
           </li>
@@ -171,6 +171,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </footer>
 </div>
 <!-- ./wrapper -->
+
+@auth
+    {{-- Save the info of authenticated user to window --}}
+    <script>
+        window.user = @json(auth()->user());
+    </script>
+@endauth
+
 
 <script src="/js/app.js"></script>
 </body>

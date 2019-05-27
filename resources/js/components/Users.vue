@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <div class="row mt-5">
+        <div class="row mt-5" v-if="$gate.isAdmin()">
           <div class="col-md-12">
             <div class="card">
               <div class="card-header">
@@ -24,28 +24,35 @@
                         <th>Options</th>
                     </tr>
 
-                    <tr v-for="user in users" :key="user.id">
+                    <tr v-for="user in users.data" :key="user.id">
                         <td>{{user.id}}</td>
                         <td>{{user.name}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.type | upText}}</td>
                         <td>{{user.created_at | myDate}}</td>
                         <td>
-                            <a href="#" @click="editModal(user)">
-                                <i class="fa fa-edit orange"></i>
-                            </a> |
-                            <a href="#" @click="deleteUser(user.id)">
-                                <i class="fa fa-trash red"></i>
-                            </a>
+                            <button class="btn btn-xs btn-primary" @click="editModal(user)">
+                                <i class="fa fa-edit"></i>
+                            </button>
+                            <button class="btn btn-xs btn-danger" href="#" @click="deleteUser(user.id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
 
                         </td>
                     </tr>
                 </tbody></table>
               </div>
               <!-- /.card-body -->
+              <div class="card-footer">
+                  <pagination :data="users" @pagination-change-page="getResults"></pagination>
+              </div>
             </div>
             <!-- /.card -->
           </div>
+        </div>
+
+        <div class="row justify-content-center" v-else>
+            <not-found></not-found>
         </div>
 
 
@@ -121,6 +128,8 @@
         <!-- Modal END -->
 
     </div>
+
+
 </template>
 
 <script>
@@ -141,6 +150,12 @@
             }
         },
         methods: {
+            getResults(page = 1){
+                axios.get('api/user?page=' + page)
+                .then(response => {
+                    this.users = response.data;
+                });
+            },
             updateUser(id){
                 this.$Progress.start();
 
@@ -213,7 +228,10 @@
                 })
             },
             loadUsers(){
-                axios.get("api/user").then(({data}) => (this.users = data.data));
+                if(this.$gate.isAdmin()){
+                    axios.get("api/user").then(({data}) => (this.users = data));
+                }
+
             },
             createUser(){
                 this.$Progress.start();
@@ -242,6 +260,16 @@
             }
         },
         created() {
+            Fire.$on('searching',() => {
+                let query = this.$parent.search;
+                axios.get('api/findUser?q=' + query)
+                .then((data)=>{
+                    this.users = data.data
+                })
+                .catch(()=>{
+
+                })
+            })
             this.loadUsers();
             Fire.$on('AfterCreatedUser', () => {
                 this.loadUsers();
