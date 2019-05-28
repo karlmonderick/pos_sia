@@ -14,10 +14,72 @@ $pink: #f66d9b;
 $red: #e3342f;
 $orange: #f6993f;
 $yellow: #ffed4a;
-$green: #38c172;
-$teal: #4dc0b5;
+$green: #236e42;
+$teal: #308078;  //#4dc0b5;
 $cyan: #6cb2eb;
 $white: #f1f1f1;
+$black: #000000;
+
+//Background-colors
+.bg-black{
+    background-color: $black;
+    border-radius: 5px;
+}
+
+.bg-blue{
+    background-color: $blue;
+    border-radius: 5px;
+}
+
+.bg-indigo{
+    background-color: $indigo;
+    border-radius: 5px;
+}
+
+.bg-purple{
+    background-color: $purple;
+    border-radius: 5px;
+}
+
+.bg-pink{
+    background-color: $pink;
+    border-radius: 5px;
+}
+
+.bg-red{
+    background-color: $red;
+    border-radius: 5px;
+}
+
+.bg-orange{
+    background-color: $orange;
+    border-radius: 5px;
+}
+
+.bg-yellow{
+    background-color: $yellow;
+    border-radius: 5px;
+}
+
+.bg-green{
+    background-color: $green;
+    border-radius: 5px;
+}
+
+.bg-teal{
+    background-color: $teal;
+    border-radius: 5px;
+}
+
+.bg-cyan{
+    background-color: $cyan;
+    border-radius: 5px;
+}
+
+.bg-white{
+    background-color: $white;
+    border-radius: 5px;
+}
 
 //Text-colors
 

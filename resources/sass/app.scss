@@ -13,7 +13,11 @@ $fa-font-path: "../webfonts";
 @import "~@fortawesome/fontawesome-free/scss/brands.scss";
 
 .router-link-exact-active{
-    background-color: darkblue;
+    background-color: #007bff;
+    color: white;
+}
+.log-out-btn{
+    background-color: #007bff;
     color: white;
 }
 

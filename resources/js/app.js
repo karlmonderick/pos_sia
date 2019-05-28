@@ -53,13 +53,20 @@ Vue.use(VueRouter)
 //Routes
 let routes = [
     { path: '/dashboard', component: require('./components/Dashboard.vue').default },
+
     { path: '/pos', component: require('./components/POS.vue').default },
-    { path: '/inventory', component: require('./components/Inventory.vue').default },
+
     { path: '/reports', component: require('./components/Reports.vue').default },
-    { path: '/developer', component: require('./components/Developer.vue').default },
+
     { path: '/users', component: require('./components/Users.vue').default },
+
+    { path: '/inventory', component: require('./components/Inventory.vue').default },
     { path: '/product', component: require('./components/Product.vue').default },
+
     { path: '/profile', component: require('./components/Profile.vue').default },
+
+    { path: '/developer', component: require('./components/Developer.vue').default },
+
     { path: '*', component: require('./components/NotFound.vue').default }
 
   ]

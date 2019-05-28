@@ -19,7 +19,7 @@ class ProductController extends Controller
     public function index()
     {
         // if(\Gate::allows('isAdmin')){
-            return Product::latest()->paginate(5);
+            return Product::orderBy('id', 'DESC')->paginate(5);
         // }
     }
 
@@ -41,7 +41,15 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|gt:0',
+        ]);
+        return Product::create([
+            'name' => $request['name'],
+            'price' => $request['price'],
+            'description' => $request['description'],
+        ]);
     }
 
     /**
@@ -73,9 +81,19 @@ class ProductController extends Controller
      * @param  \App\Product  $product
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'price' => 'required|numeric|gt:0',
+
+        ]);
+
+        $product->update($request->all());
+
+        return $id;
     }
 
     /**
@@ -90,5 +108,17 @@ class ProductController extends Controller
         $product = Product::findOrFail($id);
         $product->delete();
         return ['message' => 'product deleted'];
+    }
+
+    public function search(){
+        if($search = \Request::get('q')){
+            $products = Product::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%")
+                        ->orWhere('description','LIKE', "%$search%");
+            })->paginate(5);
+        }else{
+            $products = Product::orderBy('id', 'DESC')->paginate(5);
+        }
+        return $products;
     }
 }

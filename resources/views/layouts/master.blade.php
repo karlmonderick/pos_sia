@@ -30,7 +30,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </ul>
 
     <!-- SEARCH FORM -->
-      <div class="input-group input-group-sm">
+      <div class="input-group input-group-sm col-sm-4">
         <input class="form-control form-control-navbar" @keyup="searchit" v-model="search" type="search" placeholder="Search" aria-label="Search">
         <div class="input-group-append">
           <button class="btn btn-navbar" @click="searchit" type="submit">
@@ -71,20 +71,20 @@ scratch. This page gets rid of all links and provides the needed markup only.
                with font-awesome or any other icon font library -->
             <li class="nav-item">
                 <router-link to="/dashboard" class="nav-link">
-                    <i class="fas fa-tachometer-alt nav-icon blue"></i>
+                    <i class="fas fa-tachometer-alt nav-icon "></i>
                     <p>Dashboard</p>
                 </router-link>
             </li>
             <li class="nav-item">
                 <router-link to="/pos" class="nav-link">
-                    <i class="fas fa-cash-register nav-icon green"></i>
+                    <i class="fas fa-cash-register nav-icon "></i>
                     <p>POS</p>
                 </router-link>
             </li>
 
             <li class="nav-item">
                 <router-link to="/reports" class="nav-link">
-                    <i class="fas fa-chart-pie nav-icon indigo"></i>
+                    <i class="fas fa-chart-pie nav-icon "></i>
                     <p>Reports</p>
                 </router-link>
             </li>
@@ -102,26 +102,26 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 @can('isAdmin')
                     <li class="nav-item">
                         <router-link to="/users" class="nav-link">
-                            <i class="fas fa-users nav-icon yellow"></i>
+                            <i class="fas fa-users nav-icon"></i>
                             <p>Users</p>
                         </router-link>
                     </li>
                 @endcan
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link ">
-                            <i class="fas fa-archive nav-icon"></i>
+                        <i class="fas fa-box nav-icon"></i>
                         <p>Inventory<i class="right fa fa-angle-left"></i></p>
                     </a>
                     <ul class="nav nav-treeview">
                             <li class="nav-item">
                                 <router-link to="/inventory" class="nav-link">
-                                    <i class="fas fa-suitcase nav-icon"></i>
-                                    <p>Inventory Stocks</p>
+                                    <i class="fas fa-box-open nav-icon"></i>
+                                    <p>Stocks</p>
                                 </router-link>
                             </li>
                             <li class="nav-item">
                                     <router-link to="/product" class="nav-link">
-                                        <i class="fas fa-box-open nav-icon"></i>
+                                        <i class="fas fa-pills nav-icon"></i>
                                         <p>Product List</p>
                                     </router-link>
                                 </li>

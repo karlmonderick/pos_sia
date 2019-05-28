@@ -14,4 +14,8 @@ class Product extends Model
         'name', 'price', 'description'
     ];
 
+    public function inventory(){
+        return $this->hasMany('App\Inventory');
+    }
+
 }

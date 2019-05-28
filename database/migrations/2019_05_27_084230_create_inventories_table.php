@@ -18,6 +18,8 @@ class CreateInventoriesTable extends Migration
             $table->timestamps();
             $table->integer('product_id');
             $table->integer('stock_quantity');
+            $table->integer('stock_original');
+            $table->integer('user_id');
         });
     }
 

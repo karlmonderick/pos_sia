@@ -128,32 +128,7 @@
                     this.products = response.data;
                 });
             },
-            updateProduct(id){
-                this.$Progress.start();
 
-                this.form.put('api/product/'+this.form.id)
-                .then(()=>{
-
-                    $('#addNewProduct').modal('hide')
-                    swal.fire(
-                        'Updated!',
-                        'Information has been updated.',
-                        'success'
-                    )
-
-                    this.$Progress.finish();
-                    Fire.$emit('AfterCreatedProduct');
-
-                })
-                .catch(()=>{
-                    swal.fire(
-                        'Error!',
-                        'Please check your inputs.',
-                        'warning'
-                    )
-                    this.$Progress.fail();
-                })
-            },
             editModal(product){
                 this.editmode = true;
                 this.form.reset();
@@ -199,6 +174,32 @@
                     }
                 })
             },
+            updateProduct(id){
+                this.$Progress.start();
+
+                this.form.put('api/product/'+this.form.id)
+                .then(()=>{
+
+                    $('#addNewProduct').modal('hide')
+                    swal.fire(
+                        'Updated!',
+                        'Information has been updated.',
+                        'success'
+                    )
+
+                    this.$Progress.finish();
+                    Fire.$emit('AfterCreatedProduct');
+
+                })
+                .catch(()=>{
+                    swal.fire(
+                        'Error!',
+                        'Please check your inputs.',
+                        'warning'
+                    )
+                    this.$Progress.fail();
+                })
+            },
             loadProducts(){
                 if(this.$gate.isAdmin()){
                     axios.get("api/product").then(({data}) => (this.products = data));
@@ -234,7 +235,7 @@
         created() {
             Fire.$on('searching',() => {
                 let query = this.$parent.search;
-                axios.get('api/findProdict?q=' + query)
+                axios.get('api/findProduct?q=' + query)
                 .then((data)=>{
                     this.products = data.data
                 })
