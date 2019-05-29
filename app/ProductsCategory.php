@@ -6,5 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class ProductsCategory extends Model
 {
-    //
+    protected $fillable = [
+        'name',
+    ];
 }

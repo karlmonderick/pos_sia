@@ -29,4 +29,6 @@ Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
 Route::get('findUser', 'API\UserController@search');
 Route::get('findProduct', 'API\ProductController@search');
+Route::get('findInventoryProduct', 'API\InventoryController@search');
+Route::get('findInventoryCategory', 'API\InventoryController@searchByCategory');
 //Route::get('findInventory', 'API\InventoryController@search');

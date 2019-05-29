@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Inventory extends Model
 {
     protected $fillable = [
-        'product_id', 'stock_quantity', 'user_id'
+        'product_id', 'stock_quantity', 'stock_original', 'user_id'
     ];
 
     // public function getProduct(){

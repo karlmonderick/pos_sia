@@ -38,6 +38,34 @@
                     </div>
                     <!-- /.card-body -->
                 </div>
+
+                 <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Categories</h3>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body p-0">
+                        <table class="table">
+                        <tbody><tr>
+                            <th>Name</th>
+                            <th>
+                                <!-- <select v-model="category.category_id" @change="getByCategory(inventory_category.id)" class="form-control">
+                                    <option value="" selected>--Select Category--</option>
+                                    <option v-for="inventory_category in inventories.product_category_summary" :key="inventory_category.name" :value="inventory_category.id" >{{inventory_category.category_name}}</option>
+                                </select> -->
+                            </th>
+                        </tr>
+                        <tr>
+                            <td><a href=# @click="getByCategory('')"> All</a></td>
+                        </tr>
+                        <tr v-for="inventory_category in inventories.product_category_summary" :key="inventory_category.name">
+
+                            <td><a href=# @click="getByCategory(inventory_category.id)"> {{inventory_category.category_name}}</a></td>
+                        </tr>
+                        </tbody></table>
+                    </div>
+                    <!-- /.card-body -->
+                </div>
                 <!-- /.card -->
           </div>
           <div class="col-md-9">
@@ -56,7 +84,10 @@
                     <tr>
                         <th>ID</th>
                         <th>Product Name</th>
-                        <th>Stocks</th>
+                        <th>Category</th>
+                        <th>Remaining</th>
+                        <th>Original Qty.</th>
+                        <th>Inserted at</th>
                         <th>Updated at</th>
                         <th>Updated by</th>
                         <th>Options</th>
@@ -65,7 +96,10 @@
                     <tr v-for="inventory in inventories.inventory_product.data" :key="inventory.id">
                         <td>{{inventory.id}}</td>
                         <td>{{inventory.name}}</td>
+                        <td><h5><span class="badge badge-secondary">{{inventory.category_name}}</span></h5></td>
                         <td>{{inventory.stock_quantity}}</td>
+                        <td>{{inventory.stock_original}}</td>
+                        <td>{{inventory.created_at | myDate}}</td>
                         <td>{{inventory.updated_at | myDate}}</td>
                         <td>{{inventory.username}}</td>
 
@@ -74,7 +108,7 @@
                                 <button class="btn btn-sm btn-primary" @click="editModal(inventory)">
                                     <i class="fa fa-edit"></i>
                                 </button>
-                                <button class="btn btn-sm btn-danger" href="#" @click="deleteProduct(inventory.id)">
+                                <button class="btn btn-sm btn-danger" href="#" @click="deleteInventory(inventory.id)">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             </div>
@@ -96,6 +130,7 @@
             <not-found></not-found>
         </div>
 
+
         <!-- Modal -->
         <div class="modal fade" id="addNewInventory" tabindex="-1" role="dialog" aria-labelledby="addNewInventory" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -112,25 +147,26 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="Name">Product Name</label>
-                                    <!-- <select v-model="form.product_id" id="inputType" class="form-control" :class="{ 'is-invalid': form.errors.has('product_id') }">
-                                        <option v-for="p_list in inventories.product_list" :key="p_list.id">{{plist.name}}</option>
-                                    </select> -->
-                                    <select v-model="form.product_id" class="form-control">
+                                    <select v-if="!editmode" v-model="form.product_id" class="form-control">
                                         <option value="" selected>--Select--</option>
-                                        <option v-for="p_list in inventories.product_list" :key="p_list.id">{{p_list.name}}</option>
+                                        <option v-for="p_list in inventories.product_list" :key="p_list.id" :value="p_list.id" >{{p_list.name}}</option>
+                                    </select>
+                                    <select v-else v-model="form.product_id" class="form-control" disabled>
+                                        <option value="" selected>--Select--</option>
+                                        <option v-for="p_list in inventories.product_list" :key="p_list.id" :value="p_list.id" >{{p_list.name}}</option>
                                     </select>
                                     <has-error :form="form" field="productname"></has-error>
                                 </div>
                                 <div class="form-group">
-                                    <label for="Product_Price">Retail Price</label>
-                                    <input v-model="form.price" type="number" class="form-control" id="Product_Price" placeholder="Enter Price" :class="{ 'is-invalid': form.errors.has('price') }">
+                                    <label v-show="editmode" for="Stocks Qty">Stocks Remaining</label>
+                                    <label v-show="!editmode" for="Stocks Qty">Stocks</label>
+                                    <input v-model="form.stock_quantity" type="number" class="form-control" id="Product_Price" placeholder="Enter Stocks" :class="{ 'is-invalid': form.errors.has('price') }">
                                     <has-error :form="form" field="price"></has-error>
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="inputDescription">Product Description</label>
-                                    <textarea v-model="form.description" name="inputDescription" id="inputDescription" placeholder="Enter Description" cols="30" rows="10" class="form-control" :class="{ 'is-invalid': form.errors.has('description') }"></textarea>
-                                    <has-error :form="form" field="description"></has-error>
+                                <div v-show="editmode" class="form-group">
+                                    <label for="Stock_Original">Stocks Original</label>
+                                    <input v-model="form.stock_original" type="number" class="form-control" id="Stock_Original" :class="{ 'is-invalid': form.errors.has('price') }">
+                                    <has-error :form="form" field="price"></has-error>
                                 </div>
                             </div>
                             <!-- /.card-body -->
@@ -156,11 +192,38 @@
             return {
                 editmode: false,
                 inventories : {},
+                inventories_perCategory : this.inventories,
+                category: new Form({
+                    category_id:''
+                }),
                 form: new Form({
+                    id:'',
                     product_id:'',
-                    stock_quantiy: '',
-                    user_id: '',
-                })
+                    stock_quantity: '',
+                    stock_original: '',
+                    user_id: user.id,
+                }),
+                // columns: ['id', 'name', 'stock_quantity', 'created_at', 'updated_at', 'username'],
+                // options: {
+                //     headings: {
+                //         id: 'ID',
+                //         name: 'Product Name',
+                //         stock_quantity: 'Qty',
+                //         created_at: 'Inserted At',
+                //         updated_at: 'Updated At',
+                //         username: 'Updated By',
+
+                //     },
+                //     sortable: ['id', 'name', 'stock_quantity', 'created_at', 'updated_at', 'username'],
+                //     filterable: ['name', 'stock_quantity'],
+                //     skin: 'table table-striped  table-hover',
+                //     perPage: 5,
+                //     perPageValues: [5,10,25,50,100],
+                //     pagination: { nav: 'fixed' },
+                //     sortIcon: { base:'fas', up:'fa-sort-up', down:'fa-sort-down', is:'fa-sort' },
+                //     toMomentFormat: true,
+
+                // }
             }
         },
         methods: {
@@ -169,6 +232,18 @@
                 .then(response => {
                     this.inventories = response.data;
                 });
+            },
+
+            getByCategory($id){
+                // this.form.delete('api/inventory/'+id)
+                let query = $id;
+                axios.get('api/findInventoryCategory?q=' + query)
+                .then((data)=>{
+                    this.inventories.inventory_product = data.data
+                })
+                .catch(()=>{
+
+                })
             },
 
             editModal(inventory){
@@ -277,9 +352,19 @@
         created() {
             Fire.$on('searching',() => {
                 let query = this.$parent.search;
-                axios.get('api/findInventory?q=' + query)
+                axios.get('api/findInventoryProduct?q=' + query)
                 .then((data)=>{
-                    this.inventory = data.data
+                    this.inventories.inventory_product = data.data
+                })
+                .catch(()=>{
+
+                })
+            })
+             Fire.$on('searchingByCategory',() => {
+                let query = this.category.category_name;
+                axios.get('api/findInventoryCategory?q=' + query)
+                .then((data)=>{
+                    this.inventories.inventory_product = data.data
                 })
                 .catch(()=>{
 
@@ -292,3 +377,5 @@
         }
     }
 </script>
+
+

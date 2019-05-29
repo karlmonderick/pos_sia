@@ -47,6 +47,11 @@ Vue.use(VueProgressBar, {
     height: '5px'
   })
 
+  //DataTable
+import { ClientTable } from 'vue-tables-2';
+Vue.use(ClientTable);
+
+
 
 Vue.use(VueRouter)
 
@@ -80,7 +85,7 @@ Vue.filter('upText', function(text){
     return text.charAt(0).toUpperCase() + text.slice(1);
 });
 Vue.filter('myDate', function(created){
-    return moment(created).format('MMMM Do YYYY');
+    return moment(created).calendar();
 });
 
 //HTTP Request after Creating
