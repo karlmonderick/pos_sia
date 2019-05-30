@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\User;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
 
 class UserController extends Controller
 {
@@ -22,7 +23,12 @@ class UserController extends Controller
     public function index()
     {
         if(\Gate::allows('isAdmin')){
-            return User::latest()->paginate(5);
+            $users = DB::table('users')
+            ->select('users.id' , 'users.name as username', 'users.email' , 'users.created_at' , 'users.type' ,'branches.name as branch_name')
+            ->leftJoin('branches', 'users.branch_id', '=', 'branches.id')
+            ->paginate(5);
+
+            return $users;
         }
 
     }

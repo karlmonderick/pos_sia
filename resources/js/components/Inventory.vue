@@ -5,16 +5,6 @@
                 <div class="card">
                     <div class="card-header">
                         <h3 class="card-title">Overview</h3>
-
-                        <!-- <div class="card-tools">
-                            <ul class="pagination pagination-sm m-0 float-right">
-                                <li class="page-item"><a class="page-link" href="#">«</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">»</a></li>
-                            </ul>
-                        </div> -->
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body p-0">
@@ -39,91 +29,95 @@
                     <!-- /.card-body -->
                 </div>
 
-                 <div class="card">
+                <div class="card">
                     <div class="card-header">
-                        <h3 class="card-title">Categories</h3>
+                        <h3 class="card-title">Search by:</h3>
                     </div>
                     <!-- /.card-header -->
-                    <div class="card-body p-0">
-                        <table class="table">
-                        <tbody><tr>
-                            <th>Name</th>
-                            <th>
-                                <!-- <select v-model="category.category_id" @change="getByCategory(inventory_category.id)" class="form-control">
-                                    <option value="" selected>--Select Category--</option>
-                                    <option v-for="inventory_category in inventories.product_category_summary" :key="inventory_category.name" :value="inventory_category.id" >{{inventory_category.category_name}}</option>
-                                </select> -->
-                            </th>
-                        </tr>
-                        <tr>
-                            <td><a href=# @click="getByCategory('')"> All</a></td>
-                        </tr>
-                        <tr v-for="inventory_category in inventories.product_category_summary" :key="inventory_category.name">
-
-                            <td><a href=# @click="getByCategory(inventory_category.id)"> {{inventory_category.category_name}}</a></td>
-                        </tr>
-                        </tbody></table>
+                    <div class="card-body p-2">
+                         <form @submit.prevent="groupBy()">
+                            <div class="form-group">
+                                <label for="Name">Category:</label>
+                                <select v-model="search_form.category_id" class="form-control">
+                                    <option value="" selected>--Select--</option>
+                                    <option v-for="category_list in inventories.category_get" :key="category_list.id" :value="category_list.id" >{{category_list.category_name}}</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label for="Name">Branch:</label>
+                                <select v-model="search_form.branch_id" class="form-control">
+                                    <option value="" selected>--Select--</option>
+                                    <option v-for="branch_list in inventories.branch_get" :key="branch_list.id" :value="branch_list.id" >{{branch_list.name}}</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-secondary btn-block">Search <i class="fas fa-search"></i></button>
+                         </form>
                     </div>
                     <!-- /.card-body -->
                 </div>
+
+
                 <!-- /.card -->
-          </div>
-          <div class="col-md-9">
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">Inventory: Stocks</h3>
-
-                <div class="card-tools">
-                    <button class="btn btn-success" @click="newModal">Add New Stock <i class="fas fa-user-plus fa-fw"></i></button>
-                </div>
-              </div>
-              <!-- /.card-header -->
-              <div class="card-body table-responsive p-0">
-                <table class="table table-hover">
-                  <tbody>
-                    <tr>
-                        <th>ID</th>
-                        <th>Product Name</th>
-                        <th>Category</th>
-                        <th>Remaining</th>
-                        <th>Original Qty.</th>
-                        <th>Inserted at</th>
-                        <th>Updated at</th>
-                        <th>Updated by</th>
-                        <th>Options</th>
-                    </tr>
-
-                    <tr v-for="inventory in inventories.inventory_product.data" :key="inventory.id">
-                        <td>{{inventory.id}}</td>
-                        <td>{{inventory.name}}</td>
-                        <td><h5><span class="badge badge-secondary">{{inventory.category_name}}</span></h5></td>
-                        <td>{{inventory.stock_quantity}}</td>
-                        <td>{{inventory.stock_original}}</td>
-                        <td>{{inventory.created_at | myDate}}</td>
-                        <td>{{inventory.updated_at | myDate}}</td>
-                        <td>{{inventory.username}}</td>
-
-                        <td>
-                            <div class="btn-group">
-                                <button class="btn btn-sm btn-primary" @click="editModal(inventory)">
-                                    <i class="fa fa-edit"></i>
-                                </button>
-                                <button class="btn btn-sm btn-danger" href="#" @click="deleteInventory(inventory.id)">
-                                    <i class="fa fa-trash"></i>
-                                </button>
-                            </div>
-
-                        </td>
-                    </tr>
-                </tbody></table>
-              </div>
-              <!-- /.card-body -->
-              <div class="card-footer">
-                  <pagination :data="inventories.inventory_product" @pagination-change-page="getResults"></pagination>
-              </div>
             </div>
-            <!-- /.card -->
-          </div>
+            <div class="col-md-9">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="card-title">Inventory: Stocks</h3>
+
+                        <div class="card-tools">
+                            <button class="btn btn-success" @click="newModal">Add New Stock <i class="fas fa-user-plus fa-fw"></i></button>
+                        </div>
+                    </div>
+                    <!-- /.card-header -->
+                    <div class="card-body table-responsive p-0">
+                        <table class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Product Name</th>
+                                    <th>Category</th>
+                                    <th>Remaining</th>
+                                    <th>Original Qty.</th>
+                                    <th>Branch</th>
+                                    <th>Inserted at</th>
+                                    <th>Updated at</th>
+                                    <th>Updated by</th>
+                                    <th>Options</th>
+                                </tr>
+
+                                <tr v-for="inventory in inventories.inventory_product.data" :key="inventory.id">
+                                    <td>{{inventory.id}}</td>
+                                    <td>{{inventory.name}}</td>
+                                    <td><h5><span class="badge badge-secondary">{{inventory.category_name}}</span></h5></td>
+                                    <td>{{inventory.stock_quantity}}</td>
+                                    <td>{{inventory.stock_original}}</td>
+                                    <td>{{inventory.branch_name}}</td>
+                                    <td>{{inventory.created_at | myDate}}</td>
+                                    <td>{{inventory.updated_at | myDate}}</td>
+                                    <td>{{inventory.username}}</td>
+
+                                    <td>
+                                        <div class="btn-group">
+                                            <button class="btn btn-sm btn-primary" @click="editModal(inventory)">
+                                                <i class="fa fa-edit"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-danger" href="#" @click="deleteInventory(inventory.id)">
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- /.card-body -->
+                    <div class="card-footer">
+                        <pagination :data="inventories.inventory_product" @pagination-change-page="getResults"></pagination>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </div>
         </div>
 
         <div class="row justify-content-center" v-else>
@@ -196,6 +190,10 @@
                 category: new Form({
                     category_id:''
                 }),
+                search_form: new Form({
+                    category_id:'',
+                    branch_id: '',
+                }),
                 form: new Form({
                     id:'',
                     product_id:'',
@@ -238,6 +236,18 @@
                 // this.form.delete('api/inventory/'+id)
                 let query = $id;
                 axios.get('api/findInventoryCategory?q=' + query)
+                .then((data)=>{
+                    this.inventories.inventory_product = data.data
+                })
+                .catch(()=>{
+
+                })
+            },
+
+            groupBy(){
+                // this.form.delete('api/inventory/'+id)
+
+                axios.get('api/findInventoryCategory?q=' +this.search_form.category_id + '&e=' +this.search_form.branch_id)
                 .then((data)=>{
                     this.inventories.inventory_product = data.data
                 })

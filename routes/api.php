@@ -20,7 +20,8 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
 Route::apiResources([
     'user' => 'API\UserController',
     'product' => 'API\ProductController',
-    'inventory' => 'API\InventoryController'
+    'inventory' => 'API\InventoryController',
+    'branch' => 'API\BranchController',
 ]);
 
 
@@ -28,6 +29,7 @@ Route::apiResources([
 Route::get('profile', 'API\UserController@profile');
 Route::put('profile', 'API\UserController@updateProfile');
 Route::get('findUser', 'API\UserController@search');
+Route::get('findBranch', 'API\BranchController@search');
 Route::get('findProduct', 'API\ProductController@search');
 Route::get('findInventoryProduct', 'API\InventoryController@search');
 Route::get('findInventoryCategory', 'API\InventoryController@searchByCategory');

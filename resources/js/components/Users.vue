@@ -20,15 +20,17 @@
                         <th>Name</th>
                         <th>Email</th>
                         <th>Type</th>
+                        <th>Branch</th>
                         <th>Registered At</th>
                         <th>Options</th>
                     </tr>
 
                     <tr v-for="user in users.data" :key="user.id">
                         <td>{{user.id}}</td>
-                        <td>{{user.name}}</td>
+                        <td>{{user.username}}</td>
                         <td>{{user.email}}</td>
                         <td>{{user.type | upText}}</td>
+                        <td>{{user.branch_name}} <p v-show="!user.branch_name">None</p> </td>
                         <td>{{user.created_at | myDate}}</td>
                         <td>
                             <button class="btn btn-xs btn-primary" @click="editModal(user)">
@@ -72,7 +74,7 @@
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="Name">Name</label>
-                                    <input v-model="form.name" type="text" class="form-control" id="name" placeholder="Enter Name" :class="{ 'is-invalid': form.errors.has('name') }">
+                                    <input v-model="form.username" type="text" class="form-control" id="name" placeholder="Enter Name" :class="{ 'is-invalid': form.errors.has('username') }">
                                     <has-error :form="form" field="username"></has-error>
                                 </div>
                                 <div class="form-group">
@@ -140,7 +142,7 @@
                 users : {},
                 form: new Form({
                     id:'',
-                    name: '',
+                    username: '',
                     email: '',
                     password: '',
                     type: '',

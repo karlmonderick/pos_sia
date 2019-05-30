@@ -20,9 +20,10 @@ class InventoryController extends Controller
         // return Inventory::orderBy('id', 'DESC')->paginate(5);
         $inventory_product = DB::table('inventories')
         ->join('products', 'inventories.product_id', '=', 'products.id')
+        ->join('branches', 'products.branch_id', '=', 'branches.id')
         ->join('users', 'inventories.user_id', '=', 'users.id')
         ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
-        ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name')
+        ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
         ->orderBy('inventories.id','ASC')
         ->paginate(5);
 
@@ -41,12 +42,18 @@ class InventoryController extends Controller
         ->groupBy('products_categories.category_name')
         ->get();
 
+        $branch_get = DB::table('branches')
+        ->get();
+
+        $category_get = DB::table('products_categories')
+        ->get();
+
         // $inventory_summary  = DB::table('inventories')
         //     ->select(DB::raw('count(*) as num'))
         //     ->groupBy('product_id')
         //     ->get();
 
-        return (['inventory_product'=>$inventory_product, 'inventory_summary'=>$inventory_summary, 'product_list' => $product_list, 'product_category_summary' => $product_category_summary]);
+        return (['inventory_product'=>$inventory_product, 'inventory_summary'=>$inventory_summary, 'product_list' => $product_list, 'product_category_summary' => $product_category_summary, 'branch_get' => $branch_get, 'category_get' => $category_get]);
 
 
     }
@@ -149,8 +156,9 @@ class InventoryController extends Controller
             $inventory_product = DB::table('inventories')
             ->join('products', 'inventories.product_id', '=', 'products.id')
             ->join('users', 'inventories.user_id', '=', 'users.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
             ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
-            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
             ->orderBy('inventories.id','ASC')
             ->where('products.name','LIKE',"%$search%")
             ->paginate(5);
@@ -159,32 +167,64 @@ class InventoryController extends Controller
             $inventory_product = DB::table('inventories')
             ->join('products', 'inventories.product_id', '=', 'products.id')
             ->join('users', 'inventories.user_id', '=', 'users.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
             ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
-            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
             ->orderBy('inventories.id','ASC')
             ->paginate(5);
         }
         return $inventory_product;
     }
     public function searchByCategory(){
-        if($search = \Request::get('q')){
+        $branch_search = \Request::get('e');
+        $category_search = \Request::get('q');
+        if($category_search != NULL && $branch_search == NULL){
 
             $inventory_product = DB::table('inventories')
             ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
             ->join('users', 'inventories.user_id', '=', 'users.id')
             ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
-            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
             ->orderBy('inventories.id','ASC')
-            ->where('products.category_id','LIKE', $search)
+            ->where('products.category_id', $category_search)
             ->paginate(10);
 
-        }else{
+        }
+        elseif($branch_search != NULL && $category_search == NULL){
+
             $inventory_product = DB::table('inventories')
             ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
             ->join('users', 'inventories.user_id', '=', 'users.id')
             ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
-            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
             ->orderBy('inventories.id','ASC')
+            ->where('products.branch_id', $branch_search)
+            ->paginate(10);
+
+        }
+        elseif($branch_search != NULL && $category_search != NULL){
+
+            $inventory_product = DB::table('inventories')
+            ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
+            ->join('users', 'inventories.user_id', '=', 'users.id')
+            ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
+            ->orderBy('inventories.id','ASC')
+            ->where('products.category_id', $category_search)
+            ->where('products.branch_id', $branch_search)
+            ->paginate(10);
+
+        }
+        else{
+            $inventory_product = DB::table('inventories')
+            ->join('products', 'inventories.product_id', '=', 'products.id')
+            ->join('branches', 'products.branch_id', '=', 'branches.id')
+            ->join('users', 'inventories.user_id', '=', 'users.id')
+            ->join('products_categories', 'products.category_id', '=', 'products_categories.id')
+            ->select('inventories.*', 'products.name', 'users.name as username', 'products_categories.category_name', 'branches.name as branch_name')
             ->paginate(5);
         }
         return $inventory_product;

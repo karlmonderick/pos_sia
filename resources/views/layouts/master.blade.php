@@ -107,6 +107,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
                         </router-link>
                     </li>
                 @endcan
+                <li class="nav-item">
+                    <router-link to="/branch" class="nav-link">
+                        <i class="fas fa-store nav-icon"></i>
+                        <p>Branch Information</p>
+                    </router-link>
+                </li>
                 <li class="nav-item has-treeview">
                     <a href="#" class="nav-link ">
                         <i class="fas fa-box nav-icon"></i>

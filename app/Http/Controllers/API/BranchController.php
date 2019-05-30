@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Branch;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class BranchController extends Controller
 {
@@ -14,7 +16,9 @@ class BranchController extends Controller
      */
     public function index()
     {
-        //
+        $branch = DB::table('branches')
+        ->paginate(5);
+        return $branch;
     }
 
     /**
@@ -35,7 +39,14 @@ class BranchController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+        ]);
+        return Branch::create([
+            'name' => $request['name'],
+            'location' => $request['location'],
+        ]);
     }
 
     /**
@@ -67,9 +78,18 @@ class BranchController extends Controller
      * @param  \App\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Branch $branch)
+    public function update(Request $request, $id)
     {
-        //
+        $branch = Branch::findOrFail($id);
+
+        $this->validate($request, [
+            'name' => 'required|string|max:255',
+            'location' => 'required|string|max:255',
+        ]);
+
+        $branch->update($request->all());
+
+        return $id;
     }
 
     /**
@@ -78,8 +98,22 @@ class BranchController extends Controller
      * @param  \App\Branch  $branch
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Branch $branch)
+    public function destroy($id)
     {
-        //
+        $branch = Branch::findOrFail($id);
+        $branch->delete();
+        return ['message' => 'product deleted'];
+    }
+
+    public function search(){
+        if($search = \Request::get('q')){
+            $branch = Branch::where(function($query) use ($search){
+                $query->where('name','LIKE',"%$search%")
+                        ->orWhere('location','LIKE', "%$search%");
+            })->paginate(5);
+        }else{
+            $branch = Branch::orderBy('id', 'DESC')->paginate(5);
+        }
+        return $branch;
     }
 }

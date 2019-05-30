@@ -67,6 +67,7 @@ let routes = [
 
     { path: '/inventory', component: require('./components/Inventory.vue').default },
     { path: '/product', component: require('./components/Product.vue').default },
+    { path: '/branch', component: require('./components/Branch.vue').default },
 
     { path: '/profile', component: require('./components/Profile.vue').default },
 
