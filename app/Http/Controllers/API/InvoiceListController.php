@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\InvoiceList;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class InvoiceListController extends Controller
 {
@@ -14,7 +16,7 @@ class InvoiceListController extends Controller
      */
     public function index()
     {
-        //
+        return DB::table('check_outs')->get();
     }
 
     /**

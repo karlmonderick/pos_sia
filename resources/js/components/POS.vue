@@ -18,12 +18,16 @@
                                 <tr>
                                     <th>Choose Client</th>
                                     <th>
-                                        <select v-model="search_client.client_id" class="form-control">
-                                            <option value="" selected>--Select--</option>
-                                            <option v-for="client_list in clients" :key="client_list.id" :value="client_list.id" >{{client_list.first_name}} {{client_list.last_name}}</option>
-                                        </select>
+                                        <div class="input-group">
+                                            <select v-model="search_client.client_id" class="form-control">
+                                                <option value="" selected>--Select--</option>
+                                                <option v-for="client_list in clients" :key="client_list.id" :value="client_list.id" >{{client_list.first_name}} {{client_list.last_name}}</option>
+                                            </select>
+                                            <span class="input-group-append">
+                                                <button type="submit" class="btn btn-secondary"><i class="fas fa-search"></i></button>
+                                            </span>
+                                        </div>
                                     </th>
-                                    <th><button type="submit" class="btn btn-light"><i class="fas fa-search"></i></button></th>
                                 </tr>
                             </table>
                         </form>
@@ -138,7 +142,7 @@
 
                                 <td>
                                     <div class="btn-group">
-                                        <input type="number" v-model="quantity" style="width: 60px">
+                                        <input type="number" class="form-control" v-model="quantity" min=1 max="100" style="width: 60px">
                                         <button class="btn btn-sm btn-primary" @click="addCart(product)">
                                             <i class="fa fa-plus"></i>
                                         </button>
@@ -345,6 +349,14 @@
             addCart(pro){
 
                 // if product is already existing in the cart
+                if(this.quantity < 1){
+                    swal.fire(
+                        'Ooops!',
+                        'It seems you are trying to input an invalid number.',
+                        'warning'
+                    )
+                     return;
+                }
                 for(var item in this.carts){
                     if(this.carts[item].id === pro.id){
                         this.carts[item].qty ++;

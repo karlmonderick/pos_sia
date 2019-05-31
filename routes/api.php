@@ -24,6 +24,7 @@ Route::apiResources([
     'branch' => 'API\BranchController',
     'client' => 'API\ClientController',
     'checkOut' => 'API\CheckOutController',
+    'invoice_list' => 'API\InvoiceListController',
 ]);
 
 

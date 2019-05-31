@@ -82,11 +82,19 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 </router-link>
             </li>
 
-            <li class="nav-item">
-                <router-link to="/reports" class="nav-link">
+            <li class="nav-item has-treeview">
+                <a href="#" class="nav-link ">
                     <i class="fas fa-chart-pie nav-icon "></i>
-                    <p>Reports</p>
-                </router-link>
+                    <p>Reports <i class="right fa fa-angle-left"></i></p>
+                </a>
+                <ul class="nav nav-treeview">
+                    <li class="nav-item">
+                        <router-link to="/invoice" class="nav-link">
+                            <i class="fas fa-receipt nav-icon"></i>
+                            <p>Invoice</p>
+                        </router-link>
+                    </li>
+                </ul>
             </li>
 
 
