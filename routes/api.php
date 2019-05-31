@@ -22,6 +22,8 @@ Route::apiResources([
     'product' => 'API\ProductController',
     'inventory' => 'API\InventoryController',
     'branch' => 'API\BranchController',
+    'client' => 'API\ClientController',
+    'checkOut' => 'API\CheckOutController',
 ]);
 
 
@@ -33,4 +35,5 @@ Route::get('findBranch', 'API\BranchController@search');
 Route::get('findProduct', 'API\ProductController@search');
 Route::get('findInventoryProduct', 'API\InventoryController@search');
 Route::get('findInventoryCategory', 'API\InventoryController@searchByCategory');
+Route::get('searchClient', 'API\ClientController@search');
 //Route::get('findInventory', 'API\InventoryController@search');

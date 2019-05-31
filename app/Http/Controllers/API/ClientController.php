@@ -1,9 +1,11 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\API;
 
 use App\Client;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
 
 class ClientController extends Controller
 {
@@ -14,7 +16,7 @@ class ClientController extends Controller
      */
     public function index()
     {
-        //
+        return $get_clients = DB::table('clients')->get();
     }
 
     /**
@@ -35,7 +37,23 @@ class ClientController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $this->validate($request, [
+            'first_name' => ['required', 'string', 'max:255'],
+            'middle_name' => ['string', 'max:255'],
+            'last_name' => ['required', 'string', 'max:255'],
+            'email' => ['string', 'email', 'max:255'],
+            'contact' => ['required', 'string', 'max:16', 'max:16'],
+            'address' => ['required', 'string', 'max:255'],
+
+        ]);
+        return Client::create([
+            'first_name' => $request['first_name'],
+            'middle_name' => $request['middle_name'],
+            'last_name' => $request['last_name'],
+            'email' => $request['email'],
+            'contact' => $request['contact'],
+            'address' => $request['address'],
+        ]);
     }
 
     /**
@@ -44,9 +62,11 @@ class ClientController extends Controller
      * @param  \App\Client  $client
      * @return \Illuminate\Http\Response
      */
-    public function show(Client $client)
+    public function show($id)
     {
-        //
+        return $get_clients = DB::table('clients')
+        ->where('id', '=', $id)
+        ->first();
     }
 
     /**
@@ -81,5 +101,17 @@ class ClientController extends Controller
     public function destroy(Client $client)
     {
         //
+    }
+
+    public function search(){
+        if($search = \Request::get('q')){
+            $client = Client::where(function($query) use ($search){
+                $query->where('id','=',$search);
+            })->first();
+        }
+        else{
+            $client = null;
+        }
+        return $client;
     }
 }
