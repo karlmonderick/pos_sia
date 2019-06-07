@@ -1,6 +1,6 @@
 <template>
     <div class="container-fluid">
-        <div class="row mt-5" v-if="$gate.isAdmin()">
+        <div class="row mt-5" v-if="$gate.isAdmin()||$gate.isManager()">
             <div class="col-md-6">
                 <div class="card">
                     <div class="card-header">
@@ -49,6 +49,15 @@
                                 <tr>
                                     <td>Email Address: </td>
                                     <td>{{chosen_client.email}} <p v-show="!chosen_client.email">None</p> </td>
+                                </tr>
+                                <tr>
+                                    <td>Branch: </td>
+                                    <td>
+                                        <select v-model="branch_select.branch_id" class="form-control" @change="findBranchProduct()">
+                                            <option value="" selected>--Select--</option>
+                                            <option v-for="branch_list in branch.data" :key="branch_list.id" :value="branch_list.id" >{{branch_list.name}}</option>
+                                        </select>
+                                    </td>
                                 </tr>
 
                             </tbody>
@@ -128,29 +137,60 @@
                     </div>
                     <!-- /.card-header -->
                     <div class="card-body table-responsive p-0">
-                        <table class="table table-hover">
-                        <tbody>
-                            <tr>
-                                <th>Name</th>
-                                <th>Price</th>
-                                <th>Add</th>
-                            </tr>
+                        <table v-if="$gate.isAdmin()" class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th>Category</th>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Stock Qty.</th>
+                                    <th>Branch</th>
+                                    <th>Add</th>
+                                </tr>
 
-                            <tr v-for="product in products.data" :key="product.id">
-                                <td>{{product.name}}</td>
-                                <td>{{product.price}}</td>
+                                <tr v-for="product in products.data" :key="product.id">
+                                    <td>{{product.category_name}}</td>
+                                    <td>{{product.name}}</td>
+                                    <td>₱ {{product.price}}</td>
+                                    <td>{{product.stock_quantity}}</td>
+                                    <td>{{product.branch_name}}</td>
 
-                                <td>
-                                    <div class="btn-group">
-                                        <input type="number" class="form-control" v-model="quantity" min=1 max="100" style="width: 60px">
-                                        <button class="btn btn-sm btn-primary" @click="addCart(product)">
-                                            <i class="fa fa-plus"></i>
-                                        </button>
-                                    </div>
+                                    <td>
+                                        <div class="btn-group">
+                                            <input type="number" class="form-control" v-model="quantity" min=1 max="100" style="width: 60px">
+                                            <button class="btn btn-sm btn-primary" @click="addCart(product)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
 
-                                </td>
-                            </tr>
-                        </tbody></table>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <table v-else class="table table-hover">
+                            <tbody>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Price</th>
+                                    <th>Add</th>
+                                </tr>
+
+                                <tr v-for="product in products.data" :key="product.id">
+                                    <td>{{product.name}}</td>
+                                    <td>{{product.price}}</td>
+
+                                    <td>
+                                        <div class="btn-group">
+                                            <input type="number" class="form-control" v-model="quantity" min=1 max="100" style="width: 60px">
+                                            <button class="btn btn-sm btn-primary" @click="addCart(product)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
                     <!-- /.card-body -->
                     <div class="card-footer">
@@ -237,6 +277,7 @@
                 products : {},
                 clients : {},
                 chosen_client: {},
+                branch: {},
                 form: new Form({
                     id:'',
                     first_name: '',
@@ -246,12 +287,16 @@
                     contact: '',
                     address: '',
                 }),
+                branch_select: new Form({
+                    branch_id: '',
+                }),
                 search_client: new Form({
                     client_id: '',
                 }),
                 carts: [],
                 cartadd: {
-                    id:'',
+                    inventory_id:'',
+                    product_id:'',
                     product_name:'',
                     price:'',
                     qty: '',
@@ -272,10 +317,13 @@
         },
         methods: {
             getResults(page = 1){
-                axios.get('api/product?page=' + page)
+                axios.get('api/findInventoryCategory?page=' + page)
                 .then(response => {
                     this.products = response.data;
                 });
+            },
+            findBranchProduct: function(){
+                axios.get("api/findInventoryCategory?e="+this.branch_select.branch_id).then(({data}) => (this.products = data));
             },
 
             findClient(){
@@ -300,12 +348,21 @@
 
             loadProducts(){
                 if(this.$gate.isAdmin()){
-                    axios.get("api/product").then(({data}) => (this.products = data));
+                    axios.get("api/findInventoryCategory").then(({data}) => (this.products = data));
+                }
+                else{
+                    axios.get("api/product/").then(({data}) => (this.products = data));
+                }
+
+            },
+            loadBranch(){
+                if(this.$gate.isAdmin()||this.$gate.isManager()){
+                    axios.get("api/branch").then(({data}) => (this.branch = data));
                 }
 
             },
             loadClient(){
-                if(this.$gate.isAdmin()){
+                if(this.$gate.isAdmin()||this.$gate.isManager()){
                     axios.get("api/client").then(({data}) => (this.clients = data));
                 }
 
@@ -358,8 +415,8 @@
                      return;
                 }
                 for(var item in this.carts){
-                    if(this.carts[item].id === pro.id){
-                        this.carts[item].qty ++;
+                    if(this.carts[item].inventory_id === pro.id){
+                        this.carts[item].qty = parseFloat(this.carts[item].qty) + parseFloat(this.quantity);
                         this.carts[item].amount = pro.price * this.carts[item].qty;
                         this.storeCart();
                         return;
@@ -367,7 +424,8 @@
                 }
 
                 // if product is not existing in the cart
-                this.cartadd.id = pro.id;
+                this.cartadd.inventory_id = pro.id;
+                this.cartadd.product_id = pro.product_id;
                 this.cartadd.name = pro.name;
                 this.cartadd.price = pro.price;
                 this.cartadd.qty = this.quantity;
@@ -431,7 +489,7 @@
                                 client_id: this.chosen_client.id,
                                 cart_content: JSON.stringify(this.carts),
                                 total_amount: this.totalprice,
-                                branch_id:'1',
+                                branch_id:this.branch_select.branch_id,
                             })
                             .then(()=>{
                                 Fire.$emit('AfterCreatedClient');
@@ -478,6 +536,7 @@
             })
             this.loadProducts();
             this.loadClient();
+            this.loadBranch();
             Fire.$on('AfterCreatedClient', () => {
                 this.loadProducts();
             });

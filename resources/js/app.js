@@ -19,6 +19,17 @@ import moment from 'moment';
 import swal from 'sweetalert2';
 window.swal = swal;
 
+//SortTable
+import SortedTablePlugin from "vue-sorted-table";
+Vue.use(SortedTablePlugin);
+
+//Bootstrap Vue
+import Vue from 'vue'
+import BootstrapVue from 'bootstrap-vue'
+import 'bootstrap/dist/css/bootstrap.css'
+import 'bootstrap-vue/dist/bootstrap-vue.css'
+Vue.use(BootstrapVue)
+
 const toast = swal.mixin({
     toast: true,
     position: 'top-end',
@@ -90,6 +101,10 @@ Vue.filter('upText', function(text){
 Vue.filter('myDate', function(created){
     return moment(created).calendar();
 });
+Vue.filter('calendarDate', function(created){
+    return moment(created).format('MMMM D, YYYY - h:mm a');
+});
+
 
 //HTTP Request after Creating
 window.Fire = new Vue();

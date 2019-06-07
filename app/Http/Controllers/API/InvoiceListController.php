@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\InvoiceList;
+use App\CheckOut;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +17,11 @@ class InvoiceListController extends Controller
      */
     public function index()
     {
-        return DB::table('check_outs')->get();
+        return DB::table('check_outs')
+        ->join('branches', 'check_outs.branch_id', '=', 'branches.id')
+        ->join('clients', 'check_outs.client_id', '=', 'clients.id')
+        ->select('check_outs.*', 'branches.name', DB::raw("CONCAT(clients.first_name, ' ',clients.last_name) AS full_name"))
+        ->get(10);
     }
 
     /**
@@ -80,8 +85,14 @@ class InvoiceListController extends Controller
      * @param  \App\InvoiceList  $invoiceList
      * @return \Illuminate\Http\Response
      */
-    public function destroy(InvoiceList $invoiceList)
+    public function destroy($id)
     {
-        //
+        // $invoice = DB::table('check_outs')
+        // ->where('id', $id)
+        // ->first();
+        // $invoice->delete();
+        $product = CheckOut::findOrFail($id);
+        $product->delete();
+        return ['message' => 'invoice checkout deleted'];
     }
 }

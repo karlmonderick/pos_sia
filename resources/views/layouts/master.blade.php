@@ -15,6 +15,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
     <link rel="stylesheet" href="/css/app.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.10.18/css/dataTables.bootstrap4.min.css">
 
 </head>
 <body class="hold-transition sidebar-mini">
@@ -209,5 +210,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
 <script src="/js/app.js"></script>
+<script src="https://cdn.datatables.net/1.10.18/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/1.10.18/js/dataTables.bootstrap4.min.js"></script>
+
 </body>
 </html>

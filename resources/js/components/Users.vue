@@ -39,7 +39,6 @@
                             <button class="btn btn-xs btn-danger" href="#" @click="deleteUser(user.id)">
                                 <i class="fa fa-trash"></i>
                             </button>
-
                         </td>
                     </tr>
                 </tbody></table>
@@ -93,6 +92,14 @@
                                     <has-error :form="form" field="type"></has-error>
                                 </div>
                                 <div class="form-group">
+                                    <label for="inputType">Branch</label>
+                                        <select v-model="form.branch_id" class="form-control">
+                                            <option value="" selected>--Select--</option>
+                                            <option v-for="branch_list in branch.data" :key="branch_list.id" :value="branch_list.id" >{{branch_list.name}}</option>
+                                        </select>
+                                    <has-error :form="form" field="type"></has-error>
+                                </div>
+                                <div class="form-group">
                                     <label for="inputBio">Bio</label>
                                     <textarea v-model="form.bio" name="Bio" id="" cols="30" rows="10" class="form-control" :class="{ 'is-invalid': form.errors.has('bio') }"></textarea>
                                     <has-error :form="form" field="bio"></has-error>
@@ -140,6 +147,7 @@
             return {
                 editmode: false,
                 users : {},
+                branch: {},
                 form: new Form({
                     id:'',
                     username: '',
@@ -147,7 +155,8 @@
                     password: '',
                     type: '',
                     bio: '',
-                    photo: ''
+                    photo: '',
+                    branch_id: ''
                 })
             }
         },
@@ -157,6 +166,12 @@
                 .then(response => {
                     this.users = response.data;
                 });
+            },
+            loadBranch(){
+                if(this.$gate.isAdmin()){
+                    axios.get("api/branch").then(({data}) => (this.branch = data));
+                }
+
             },
             updateUser(id){
                 this.$Progress.start();
@@ -273,6 +288,7 @@
                 })
             })
             this.loadUsers();
+            this.loadBranch();
             Fire.$on('AfterCreatedUser', () => {
                 this.loadUsers();
             });
